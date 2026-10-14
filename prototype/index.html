@@ -14,6 +14,8 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding-block:10px;padding-inline:16px;display:flex;flex-direction:column}
+body.title-mode{padding:0;background:#050404}
+body.title-mode .note{display:none}
 .wrap{width:100%;flex:1;display:flex;flex-direction:column;min-height:0}
 #app{flex:1;display:flex;flex-direction:column;min-height:0}
 #app>.btn{align-self:flex-start}
@@ -39,8 +41,21 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,textarea:focus-vis
 .orb{width:92px;height:92px;border-radius:50%;border:3px solid #4a3d2c;background:#120f0c;position:relative;overflow:hidden;margin:0 auto}
 .liq{position:absolute;left:0;right:0;bottom:0;transition:height .8s}
 .orbt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:#f3e6c8}
-.mn{display:block;width:240px;max-width:100%;margin:8px auto;font-family:'Cinzel',Georgia,serif;background:none;border:none;color:#c9b38a;font-size:15px;cursor:pointer;letter-spacing:2px}
-.mn:hover{color:#d8b25a}
+.title-scene{position:relative;isolation:isolate;width:100%;min-height:100dvh;overflow:hidden;background:#030201}
+.title-scene::before{content:"";position:absolute;inset:0;background:url('assets/rocky-cave-walls.png') center / cover no-repeat}
+.title-scene::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 58%,transparent 35%,rgba(0,0,0,.25) 85%)}
+.title-art,.title-gate,.title-floor{position:absolute;display:block;height:auto}
+.title-art{z-index:2;left:50%;transform:translateX(-50%);object-fit:contain}
+.title-interview{width:39.5%;top:10.8%}
+.title-dungeon{width:29.7%;top:21.2%}
+.title-subtitle{width:min(368px,28%);top:30.2%}
+.title-gate{z-index:1;width:28%;left:36%;top:39%}
+.title-floor{z-index:3;width:73.5%;bottom:0;left:13.25%}
+.title-menu{position:absolute;z-index:4;left:50%;top:66%;transform:translateX(-50%);width:25%;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.6vw,24px)}
+.title-menu button{display:block;width:100%;min-height:44px;padding:8px;border:1px solid transparent;border-radius:4px;background:rgba(0,0,0,.52);cursor:pointer}
+.title-menu button:hover,.title-menu button:focus-visible{background:rgba(38,20,7,.85);border-color:#b78647;outline:2px solid #d8b25a;outline-offset:2px}
+.title-menu img{display:block;max-width:100%;max-height:40px;width:auto;height:auto;margin:auto}
+.title-reset-message{min-height:18px;margin:0;max-width:380px;color:#f2d3a0;font:13px/1.4 system-ui,sans-serif;text-align:center;text-shadow:0 2px 4px #000}
 .inp{font-family:'Cinzel',Georgia,serif;background:#0d0b09;border:1px solid #6b5636;color:#e8dcc0;padding:8px;width:100%}
 .big{font-size:22px;letter-spacing:3px;margin:0 0 4px;text-align:center}
 .g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
@@ -81,6 +96,7 @@ table{border-collapse:collapse;font-size:12px}td{border:1px solid var(--bd);padd
 .chip{font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx2);cursor:pointer}
 .chipon{border-color:var(--acc);color:var(--acc)}
 @media (max-width:680px){.g2,.split{grid-template-columns:1fr}.split>div:first-child{border-right:none;border-bottom:1px solid var(--bd)}.cl4{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media (max-aspect-ratio:4/3){.title-scene::before{background-size:auto 100%}.title-interview{width:72%;top:12%}.title-dungeon{width:58%;top:22%}.title-subtitle{width:70%;top:31%}.title-gate{width:52%;left:24%;top:38%}.title-floor{width:110%;left:-5%}.title-menu{top:59%;width:56%}}
 @media (prefers-reduced-motion:reduce){.liq{transition:none}}
 </style>
 </head>
@@ -238,7 +254,7 @@ function award(stepId, coding) {
 
 // ---------- game screens ----------
 const V = {};
-V.title = () => `<div class="g" style="text-align:center;padding-top:60px"><p style="font-size:34px;color:#a8321f;letter-spacing:4px;margin:0">Interview</p><p style="font-size:24px;color:#d8b25a;letter-spacing:8px;margin:0 0 10px">Dungeon</p><p class="sm" style="margin:0 0 30px;font-family:system-ui">A playable demo of Floor III. Real Python runs in your browser.</p><button class="mn" onclick="go(P.hero ? 'heroes' : 'cls')">${P.hero ? 'Continue' : 'New game'}</button>${P.hero ? '<button class="mn" onclick="resetGame()">Start over</button>' : ''}<p id="rs" class="sm" style="font-family:system-ui;min-height:16px"></p></div>`;
+V.title = () => `<main class="title-scene"><h1 class="sr">Interview Dungeon</h1><p class="sr">A playable demo of Floor III. Real Python runs in your browser.</p><img class="title-art title-interview" src="assets/interview.png" alt=""><img class="title-art title-dungeon" src="assets/dungeon.png" alt=""><img class="title-art title-subtitle" src="assets/a-playable-demo-of-floor-iii.png" alt=""><img class="title-gate" src="assets/stone-archway.png" alt=""><img class="title-floor" src="assets/stone-brick-floor.png" alt=""><nav class="title-menu" aria-label="Start menu"><button aria-label="Continue" onclick="go(P.hero ? 'heroes' : 'cls')"><img src="assets/continue.png" alt=""></button>${P.hero ? '<button aria-label="Start over" onclick="resetGame()"><img src="assets/start-over.png" alt=""></button>' : ''}<p id="rs" class="title-reset-message" role="status"></p></nav></main>`;
 function resetGame() {
   const el = document.getElementById('rs');
   if (el.dataset.sure) { P = fresh(); save(); render(); return; }
@@ -402,6 +418,7 @@ V.lvl = () => `<div class="g" style="text-align:center;padding-top:50px"><p clas
 
 function render() {
   if (!P.hero && !['title', 'cls', 'name'].includes(S.view)) S.view = 'title';
+  document.body.classList.toggle('title-mode', S.view === 'title');
   const backBtn = S.view !== 'title' && !WORK.includes(S.view) ? '<button class="btn" style="margin-bottom:8px" onclick="back()">← Back</button>' : '';
   app.innerHTML = backBtn + V[S.view]();
   if (S.view === 'code') lock();
